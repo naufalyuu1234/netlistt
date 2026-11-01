@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detail - NetList</title>
+
+  <!-- Font & ikon -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif:wght@400;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+  <!-- CSS Modular -->
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/pages/detail.css">
+</head>
+<body>
+  <div class="page" id="page">
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar">
+      <a href="../index.html" class="logo">Net<span class="accent">List</span></a>
+
+      <nav class="menu" id="nav-menu">
+        <a href="../index.html">Home</a>
+        <a href="movies.html">Movies</a>
+        <a href="series.html">Series</a>
+        <a href="watchlist.html">WatchList</a>
+      </nav>
+
+      <div class="search-box">
+        <i class="fa-solid fa-magnifying-glass"></i>
+        <input type="text" id="search-input" placeholder="Search movies...">
+      </div>
+
+      <a href="profile/navbar.html" class="profile" aria-label="Profile">
+        <i class="fa-regular fa-circle-user"></i>
+      </a>
+
+      <button class="nav-toggle" id="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
+        <i class="fa-solid fa-bars"></i>
+      </button>
+    </header>
+
+    <!-- BAGIAN ATAS: poster + info utama -->
+    <section class="detail-header">
+      <button class="btn-back" id="btn-back" aria-label="Kembali">
+        <i class="fa-solid fa-arrow-left"></i>
+      </button>
+
+      <img class="poster" id="poster" alt="Poster">
+
+      <div class="detail-info">
+        <h1 id="title">Loading...</h1>
+        <p class="meta" id="meta"></p>
+        <p class="rating">
+          <i class="fa-solid fa-star star"></i>
+          <span id="rating"></span>
+        </p>
+
+        <div class="buttons">
+          <button type="button" class="btn-outline" id="btn-trailer">
+            <i class="fa-solid fa-play"></i> Trailer
+          </button>
+          <button type="button" class="btn-outline" id="btn-watchlist" aria-pressed="false">
+            <i class="fa-solid fa-bookmark"></i> WatchList
+          </button>
+          <button type="button" class="btn-outline" id="btn-journal">
+            <i class="fa-solid fa-book"></i> Jurnal
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- SINOPSIS -->
+    <section class="section">
+      <h2 class="section-title">Synopsis</h2>
+      <p class="overview" id="overview"></p>
+    </section>
+
+    <!-- PEMAIN -->
+    <section class="section">
+      <h2 class="section-title">Cast &amp; Characters</h2>
+      <div class="cast-grid" id="cast"></div>
+    </section>
+
+    <!-- REVIEW -->
+    <section class="section">
+      <h2 class="section-title">Reviews &amp; Comments</h2>
+      <div class="reviews-wrap">
+        <div class="reviews" id="reviews"></div>
+        <button class="btn-next" id="btn-next" aria-label="Review berikutnya">
+          <i class="fa-solid fa-arrow-right"></i>
+        </button>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- JavaScript Modular -->
+  <script src="../javascript/config/api.js"></script>
+  <script src="../javascript/utils/helpers.js"></script>
+  <script src="../javascript/utils/apiClient.js"></script>
+  <script src="../javascript/services/authService.js"></script>
+  <script src="../javascript/services/watchlistService.js"></script>
+  <script src="../javascript/services/journalService.js"></script>
+  <script src="../javascript/components/authModal.js"></script>
+  <script src="../javascript/components/journalModal.js"></script>
+  <script src="../javascript/components/navbar.js"></script>
+  <script src="../javascript/pages/detail.js"></script>
+</body>
+</html>

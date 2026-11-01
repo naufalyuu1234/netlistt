@@ -1,0 +1,87 @@
+/**
+ * Membuat string HTML untuk satu kartu film atau series.
+ * @param {object} item - Data film dari TMDB
+ * @param {string} type - 'movie' atau 'tv'
+ */
+function createCardHTML(item, type = "movie") {
+  const title = item.title || item.name || "Untitled";
+  const rating = item.vote_average ? item.vote_average.toFixed(1) : "0.0";
+  const isBookmarked = WatchlistService.has(type, item.id);
+  const posterUrl = item.poster_path ? `${TMDB_CONFIG.IMG_POSTER}${item.poster_path}` : "";
+
+  return `
+    <div class="movie-card" role="link" tabindex="0" aria-label="Lihat detail ${esc(title)}" data-id="${item.id}" data-type="${type}"
+      data-title="${esc(title)}" data-poster-path="${item.poster_path || ""}">
+      <img src="${posterUrl}" alt="${esc(title)}" loading="lazy">
+      <span class="rating"><i class="fa-solid fa-star"></i> ${rating}/10</span>
+      <button type="button" class="bookmark ${isBookmarked ? "active" : ""}" aria-label="Tambahkan ${esc(title)} ke Watchlist" aria-pressed="${isBookmarked}">
+        <i class="fa-solid fa-bookmark"></i>
+      </button>
+    </div>
+  `;
+}
+
+/**
+ * Mendaftarkan event listener pada container grid menggunakan Event Delegation.
+ * Mengatur klik pada kartu menuju detail.html, dan klik tombol bookmark ke Watchlist.
+ * @param {HTMLElement} gridElement
+ * @param {function} [onBookmarkToggle] - Callback opsional ketika bookmark di-klik
+ */
+function attachCardListeners(gridElement, onBookmarkToggle = null) {
+  if (!gridElement) return;
+
+  gridElement.addEventListener("click", (e) => {
+    const btn = e.target.closest(".bookmark");
+
+    // Jika yang diklik adalah kartu (bukan tombol bookmark), buka halaman detail
+    if (!btn) {
+      const card = e.target.closest(".movie-card");
+      if (card) {
+        const type = card.dataset.type || gridElement.dataset.type || "movie";
+        location.href = getPageUrl(`detail.html?type=${type}&id=${card.dataset.id}`);
+      }
+      return;
+    }
+
+    // Jika yang diklik adalah tombol bookmark
+    const card = btn.closest(".movie-card");
+    const id = Number(card.dataset.id);
+    const type = card.dataset.type || gridElement.dataset.type || "movie";
+
+    const media = {
+      id,
+      title: card.dataset.title,
+      poster_path: card.dataset.posterPath
+    };
+    WatchlistService.toggle(media, type)
+      .then(isAdded => {
+        btn.classList.toggle("active", isAdded);
+        btn.setAttribute("aria-pressed", String(isAdded));
+        btn.setAttribute(
+          "aria-label",
+          `${isAdded ? "Hapus" : "Tambahkan"} ${card.dataset.title || "item"} ${isAdded ? "dari" : "ke"} Watchlist`
+        );
+        if (typeof onBookmarkToggle === "function") {
+          onBookmarkToggle(id, isAdded, type);
+        }
+      })
+      .catch(error => {
+        console.error("Gagal mengubah watchlist:", error);
+        window.dispatchEvent(new CustomEvent("auth:required", {
+          detail: { message: "Silakan login terlebih dahulu untuk menyimpan film ke WatchList." }
+        }));
+      });
+  });
+
+  gridElement.addEventListener("keydown", (e) => {
+    if (e.key !== "Enter" && e.key !== " ") return;
+    if (e.target.closest(".bookmark")) return;
+
+    const card = e.target.closest(".movie-card");
+    if (!card) return;
+
+    e.preventDefault();
+    const type = card.dataset.type || gridElement.dataset.type || "movie";
+    location.href = getPageUrl(`detail.html?type=${type}&id=${card.dataset.id}`);
+  });
+}
